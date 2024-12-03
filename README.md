@@ -76,7 +76,7 @@ python frsho.py xxx.xxx.xxx.xxx
 To fetch information for multiple hosts:
 
 ```bash
-python frsho.py xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx
+python frsho.py xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx/xx
 ```
 
 #### Saving Outputs
