@@ -5,6 +5,7 @@ import argparse
 import re
 import ast
 import os
+import ipaddress
 
 def sho_fetch(host):
     url = f"https://www.shodan.io/host/{host}"
@@ -13,7 +14,7 @@ def sho_fetch(host):
         "Accept-Encoding": "json",
         "Accept": "*/*",
         "Accept-Language": "en-US;q=0.9,en;q=0.8",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36",
+        "User-Agent": "Mozilla/5.0",
         "Cache-Control": "max-age=0"
     }
 
@@ -244,16 +245,41 @@ def sho_fetch(host):
 
 def main():
     parser = argparse.ArgumentParser(description="Fetch and parse Shodan host information.")
-    parser.add_argument("hosts", nargs='+', help="One or more hosts (IP addresses) to query on Shodan.")
+    parser.add_argument("hosts", nargs='+', help="One or more IP addresses or CIDR ranges to query on Shodan.")
     parser.add_argument("--output", nargs='?', const='.', help="Specify output directory for JSON files.")
     args = parser.parse_args()
 
-    output_dir = args.output  # None if not specified, or '.' (current directory) if --output is used without a path
+    output_dir = args.output
+
+    all_ips = set()
+
+    # Process input hosts and expand CIDR ranges
+    for host_input in args.hosts:
+        try:
+            # Check if input is an IP address
+            ip = ipaddress.ip_address(host_input)
+            all_ips.add(str(ip))
+        except ValueError:
+            try:
+                # Check if input is a CIDR range
+                network = ipaddress.ip_network(host_input, strict=False)
+                num_ips = network.num_addresses
+                if network.prefixlen < 24:
+                    print(f"Notice: The CIDR range {host_input} contains {num_ips} IP addresses.")
+                for ip in network:
+                    all_ips.add(str(ip))
+            except ValueError:
+                print(f"Invalid IP address or CIDR range: {host_input}")
+                continue
+
+    if not all_ips:
+        print("No valid IP addresses provided. Exiting.")
+        return
 
     all_hosts_data = []
 
-    # Process each host
-    for host in args.hosts:
+    # Process each IP address
+    for host in sorted(all_ips, key=lambda ip: ipaddress.ip_address(ip)):
         # Fetch data
         shodan_data = sho_fetch(host)
 
@@ -278,7 +304,7 @@ def main():
     print(json.dumps(all_hosts_data, indent=4))
 
     # Save master output file with all hosts data if --output is specified
-    if output_dir is not None and len(args.hosts) > 1:
+    if output_dir is not None and len(all_ips) > 1:
         master_file_path = os.path.join(output_dir, 'all_hosts.json')
         with open(master_file_path, 'w') as json_file:
             json.dump(all_hosts_data, json_file, indent=4)
