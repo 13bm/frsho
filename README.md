@@ -1,9 +1,10 @@
 # Frsho
 
-This script allows you to fetch and parse host information from [Shodan](https://www.shodan.io/) for one or multiple hosts (IP addresses or domains). It outputs the data in JSON format, suitable for further processing with tools like `jq`. The script can be used as a standalone command-line tool or imported as a library in other Python scripts.
+Frsho (Free Shodan Host Overview) is a Python script designed to fetch and parse public host information from [Shodan](https://www.shodan.io/), maximizing the available data from Shodan's free services.
 
 ## Table of Contents
 
+- [Purpose](#purpose)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -17,6 +18,10 @@ This script allows you to fetch and parse host information from [Shodan](https:/
   - [Using `jq` for JSON Processing](#using-jq-for-json-processing)
   - [Converting Base64 Images to Image Files](#converting-base64-images-to-image-files)
 - [Notes](#notes)
+
+## Purpose
+
+- This tool helps users reach the upper limits of free Shodan information by scraping and parsing data from Shodan's public web interface.
 
 ## Features
 
@@ -208,4 +213,4 @@ Suppose you have a base64 string representing an image:
   python frsho.py xxx.xxx.xxx.xxx example.com | jq '.'
   ```
 
-**Disclaimer:** This script is intended for educational and lawful purposes only. Ensure that you have proper authorization to access and retrieve data from Shodan for the hosts you query. Unauthorized access or scraping of websites may violate their terms of service or applicable laws.
+**Disclaimer:** This script is intended for educational and lawful purposes only. Ensure that you have proper authorization to access and retrieve data from Shodan for the hosts you query. Users must comply with Shodan's Terms of Service and any applicable laws when using this tool. Unauthorized scraping or excessive requests may violate the terms of service or result in IP blocking.
