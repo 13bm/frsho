@@ -87,19 +87,19 @@ python frsho.py xxx.xxx.xxx.xxx example.com xxx.xxx.xxx.xxx --output
 
 ### Using as a Library
 
-You can import the `fetch_and_parse_shodan` function into your own Python scripts.
+You can import the `sho_fetch` function into your own Python scripts.
 
 **Example:**
 
 ```python
-from frsho import fetch_and_parse_shodan
+from frsho import sho_fetch
 import json
 
 hosts = ['xxx.xxx.xxx.xxx', 'example.com', 'xxx.xxx.xxx.xxx']
 all_hosts_data = []
 
 for host in hosts:
-    data = fetch_and_parse_shodan(host)
+    data = sho_fetch(host)
     all_hosts_data.append({
         "Host": host,
         "results": data
