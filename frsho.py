@@ -244,7 +244,7 @@ def sho_fetch(host):
 
 def main():
     parser = argparse.ArgumentParser(description="Fetch and parse Shodan host information.")
-    parser.add_argument("hosts", nargs='+', help="One or more hosts (IP addresses or domains) to query on Shodan.")
+    parser.add_argument("hosts", nargs='+', help="One or more hosts (IP addresses) to query on Shodan.")
     parser.add_argument("--output", nargs='?', const='.', help="Specify output directory for JSON files.")
     args = parser.parse_args()
 
