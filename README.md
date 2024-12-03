@@ -76,7 +76,7 @@ python frsho.py xxx.xxx.xxx.xxx
 To fetch information for multiple hosts:
 
 ```bash
-python frsho.py xxx.xxx.xxx.xxx example.com xxx.xxx.xxx.xxx
+python frsho.py xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx
 ```
 
 #### Saving Outputs
@@ -84,10 +84,10 @@ python frsho.py xxx.xxx.xxx.xxx example.com xxx.xxx.xxx.xxx
 To save individual outputs for each host and a master output file containing all hosts' data:
 
 ```bash
-python frsho.py xxx.xxx.xxx.xxx example.com xxx.xxx.xxx.xxx --output
+python frsho.py xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx --output
 ```
 
-- Individual host data will be saved as `xxx.xxx.xxx.xxx.json`, `example.com.json`, etc.
+- Individual host data will be saved as `xxx.xxx.xxx.xxx.json`.
 - The master output containing all hosts' data will be saved as `all_hosts.json`.
 - Default location is current directory
 
@@ -101,7 +101,7 @@ You can import the `sho_fetch` function into your own Python scripts.
 from frsho import sho_fetch
 import json
 
-hosts = ['xxx.xxx.xxx.xxx', 'example.com', 'xxx.xxx.xxx.xxx']
+hosts = ['xxx.xxx.xxx.xxx', 'xxx.xxx.xxx.xxx']
 all_hosts_data = []
 
 for host in hosts:
@@ -158,13 +158,13 @@ brew install jq
 3. **List all open ports for each host:**
 
    ```bash
-   python frsho.py xxx.xxx.xxx.xxx example.com | jq '.[] | {Host: .Host, OpenPorts: [.results.open_ports[].port]}'
+   python frsho.py xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx | jq '.[] | {Host: .Host, OpenPorts: [.results.open_ports[].port]}'
    ```
 
 4. **Find hosts with more than 5 High severity CVEs:**
 
    ```bash
-   python frsho.py xxx.xxx.xxx.xxx example.com | jq '.[] | select(.results.vulnerabilities_summary.severity_counts.High > 5) | .Host'
+   python frsho.py xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx | jq '.[] | select(.results.vulnerabilities_summary.severity_counts.High > 5) | .Host'
    ```
 
 ### Converting Base64 Images to Image Files
