@@ -6,7 +6,7 @@ import re
 import ast
 import os
 
-def fetch_and_parse_shodan(host):
+def sho_fetch(host):
     url = f"https://www.shodan.io/host/{host}"
     headers = {
         "Host": "www.shodan.io",
@@ -255,7 +255,7 @@ def main():
     # Process each host
     for host in args.hosts:
         # Fetch data
-        shodan_data = fetch_and_parse_shodan(host)
+        shodan_data = sho_fetch(host)
 
         # Add to all_hosts_data
         all_hosts_data.append({
