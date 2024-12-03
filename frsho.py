@@ -4,8 +4,9 @@ import json
 import argparse
 import re
 import ast
+import os
 
-def sho_fetch(host):
+def fetch_and_parse_shodan(host):
     url = f"https://www.shodan.io/host/{host}"
     headers = {
         "Host": "www.shodan.io",
@@ -242,40 +243,46 @@ def sho_fetch(host):
     return data
 
 def main():
-        parser = argparse.ArgumentParser(description="Fetch and parse Shodan host information.")
-        parser.add_argument("hosts", nargs='+', help="One or more hosts (IP addresses or domains) to query on Shodan.")
-        parser.add_argument("--output", action="store_true", help="Enable saving output to JSON files named after the hosts.")
-        args = parser.parse_args()
+    parser = argparse.ArgumentParser(description="Fetch and parse Shodan host information.")
+    parser.add_argument("hosts", nargs='+', help="One or more hosts (IP addresses or domains) to query on Shodan.")
+    parser.add_argument("--output", nargs='?', const='.', help="Specify output directory for JSON files.")
+    args = parser.parse_args()
 
-        all_hosts_data = []
+    output_dir = args.output  # None if not specified, or '.' (current directory) if --output is used without a path
 
-        # Process each host
-        for host in args.hosts:
-            # Fetch data
-            shodan_data = sho_fetch(host)
+    all_hosts_data = []
 
-            # Add to all_hosts_data
-            all_hosts_data.append({
-                "Host": host,
-                "results": shodan_data
-            })
+    # Process each host
+    for host in args.hosts:
+        # Fetch data
+        shodan_data = fetch_and_parse_shodan(host)
 
-            # Save individual host data to file if the --output option is specified
-            if args.output:
-                # Sanitize filename for safety
-                filename = f"{re.sub(r'[^a-zA-Z0-9._-]', '_', host)}.json"
-                with open(filename, 'w') as json_file:
-                    json.dump(shodan_data, json_file, indent=4)
-                print(f"Output saved to {filename}")
+        # Add to all_hosts_data
+        all_hosts_data.append({
+            "Host": host,
+            "results": shodan_data
+        })
 
-        # Print the combined JSON data to stdout
-        print(json.dumps(all_hosts_data, indent=4))
+        # Save individual host data to file if the --output option is specified
+        if output_dir is not None:
+            # Sanitize filename for safety
+            filename = f"{re.sub(r'[^a-zA-Z0-9._-]', '_', host)}.json"
+            # Ensure the output directory exists
+            os.makedirs(output_dir, exist_ok=True)
+            file_path = os.path.join(output_dir, filename)
+            with open(file_path, 'w') as json_file:
+                json.dump(shodan_data, json_file, indent=4)
+            print(f"Output saved to {file_path}")
 
-        # Save master output file with all hosts data if --output is specified
-        if args.output and len(args.hosts) > 1:
-            with open('all_hosts.json', 'w') as json_file:
-                json.dump(all_hosts_data, json_file, indent=4)
-            print(f"\nMaster output saved to all_hosts.json")
+    # Print the combined JSON data to stdout
+    print(json.dumps(all_hosts_data, indent=4))
+
+    # Save master output file with all hosts data if --output is specified
+    if output_dir is not None and len(args.hosts) > 1:
+        master_file_path = os.path.join(output_dir, 'all_hosts.json')
+        with open(master_file_path, 'w') as json_file:
+            json.dump(all_hosts_data, json_file, indent=4)
+        print(f"\nMaster output saved to {master_file_path}")
 
 if __name__ == "__main__":
     main()
