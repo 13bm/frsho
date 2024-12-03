@@ -89,6 +89,7 @@ python frsho.py xxx.xxx.xxx.xxx example.com xxx.xxx.xxx.xxx --output
 
 - Individual host data will be saved as `xxx.xxx.xxx.xxx.json`, `example.com.json`, etc.
 - The master output containing all hosts' data will be saved as `all_hosts.json`.
+- Default location is current directory
 
 ### Using as a Library
 
